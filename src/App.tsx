@@ -842,7 +842,7 @@ export default function App() {
         <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-xl overflow-hidden shadow-lg shadow-orange-600/10 flex items-center justify-center bg-white border border-slate-100 shrink-0">
-              <img src="/src/assets/images/listocat_logo_1782131650738.jpg" alt="ListoCat Logo" className="h-full w-full object-cover" />
+              <img src="https://sihirlioltagate.blob.core.windows.net/products/ChatGPT%20Image%2022%20Haz%202026%2015_31_56.png" alt="ListoCat Logo" className="h-full w-full object-cover" />
             </div>
             <div>
               <h1 id="app-title-header" className="text-xl font-display font-bold text-slate-850 flex items-center gap-2">
