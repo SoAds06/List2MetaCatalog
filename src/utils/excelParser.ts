@@ -88,34 +88,8 @@ export async function parseExcelProductFile(
   // exceljs image formats can be fetched using worksheet.getImages()
   // which returns range (top-left, bottom-right) and matching imageId
   const excelImages: { colIndex: number; rowIndex: number; dataUrl: string }[] = [];
-  const wsImages = worksheet.getImages();
-  
-  wsImages.forEach((imgMeta) => {
-    const imgId = parseInt(imgMeta.imageId);
-    const image = workbook.getImage(imgId);
-    
-    if (image && image.buffer) {
-      try {
-        const u8 = new Uint8Array(image.buffer);
-        const mimeType = image.extension === 'png' ? 'image/png' : 'image/jpeg';
-        const blob = new Blob([u8], { type: mimeType });
-        const dataUrl = URL.createObjectURL(blob);
-        
-        // tl: Top Left Cell (row and col are 0-indexed in some versions of exceljs, let's normalize)
-        // Worksheet getImages returns fractional or integer coords
-        const tlRow = Math.floor(imgMeta.range.tl.row);
-        const tlCol = Math.floor(imgMeta.range.tl.col);
-
-        excelImages.push({
-          rowIndex: tlRow,
-          colIndex: tlCol,
-          dataUrl: dataUrl
-        });
-      } catch (err) {
-        console.error('Resim ayrıştırma hatası:', err);
-      }
-    }
-  });
+  // Gömülü resim okuma devre dışı bırakıldı. Sadece hücre içindeki URL'ler kullanılacak.
+  const wsImages: any[] = [];
 
   // 3. Extract text rows, starting immediately after the header row
   const rows: ExcelRow[] = [];

@@ -321,7 +321,7 @@ export default function TemplateDesigner({
           ? `Yeni Görsel ${template.layers.length + 1}` 
           : `Yeni Şekil ${template.layers.length + 1}`,
       type,
-      mappedColumn: type === 'image' ? '__excel_image_auto' : type === 'shape' ? '' : defaultColumn,
+      mappedColumn: type === 'image' ? '' : type === 'shape' ? '' : defaultColumn,
       x: 30,
       y: 40,
       width: type === 'shape' ? 20 : 60,
@@ -946,15 +946,10 @@ export default function TemplateDesigner({
                   {/* Image matching dropdown properties */}
                   {activeLayer.type === 'image' ? (
                     <>
-                      <option value="__excel_image_auto">İlk Bulunan Fotoğraf (Otomatik)</option>
-                      {imageColumns.map((col) => (
-                        <option key={col.colIndex} value={`__excel_image_col_${col.colIndex}`}>
-                          Excel'deki Görsel: {col.name}
-                        </option>
-                      ))}
+                      <option value="">-- Sütun Seçin (Resim Linki/URL) --</option>
                       {excelHeaders.map((header, i) => (
                         <option key={i} value={header}>
-                          Hücre Verisi (Uzak URL ise): {header}
+                          Resim URL / Klasör Sütunu: {header}
                         </option>
                       ))}
                     </>

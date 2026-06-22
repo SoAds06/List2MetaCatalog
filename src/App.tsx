@@ -339,11 +339,29 @@ export default function App() {
       let mappedCol = layer.mappedColumn;
       
       if (layer.type === 'image') {
-        // If we found specific columns containing drawings
-        if (data.imageColumns.length > 0) {
-          mappedCol = `__excel_image_col_${data.imageColumns[0].colIndex}`;
+        const matchIdx = normalizedHeaders.findIndex(h => 
+          h.includes('resim') || h.includes('görsel') || h.includes('gorsel') || h.includes('image') || h.includes('url') || h.includes('link') || h.includes('foto') || h.includes('img') || h.includes('photo') || h.includes('picture')
+        );
+        if (matchIdx !== -1) {
+          mappedCol = data.headers[matchIdx];
         } else {
-          mappedCol = '__excel_image_auto';
+          // If no matching headers, check cell contents of each column to see if they look like URLs
+          let foundColInCells = '';
+          for (const h of data.headers) {
+            const hasUrl = data.rows.some(row => {
+              const val = (row.values[h] || '').trim().toLowerCase();
+              return val.startsWith('http://') || val.startsWith('https://') || val.match(/\.(jpeg|jpg|png|gif|webp)/i);
+            });
+            if (hasUrl) {
+              foundColInCells = h;
+              break;
+            }
+          }
+          if (foundColInCells) {
+            mappedCol = foundColInCells;
+          } else {
+            mappedCol = ''; // Default empty if no image URL found, allowing manual choice
+          }
         }
       } else {
         // Try exact text matches
@@ -380,9 +398,6 @@ export default function App() {
       ...prev,
       layers: updatedLayers
     }));
-
-    // Transition naturally to design environment
-    setActiveStep('design');
   };
 
   const activeRow = rows.length > 0 ? rows[activeRowIndex] : null;
@@ -812,9 +827,9 @@ export default function App() {
               <Layers size={22} className="animate-pulse" />
             </div>
             <div>
-              <h1 className="text-xl font-display font-bold text-slate-850 flex items-center gap-2">
-                Excel Kart & Görsel Etiket Otomasyonu
-                <span className="text-[10px] px-2 py-0.5 bg-slate-100 text-indigo-600 font-semibold rounded-full border border-slate-200">PRO v4.2</span>
+              <h1 id="app-title-header" className="text-xl font-display font-bold text-slate-850 flex items-center gap-2">
+                LiToCat
+                <span className="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-600 font-semibold rounded-full border border-indigo-200">v1.0</span>
               </h1>
               <p className="text-xs text-slate-500">Excel verilerini ve ürün resimlerini akıllıca görsellerle birleştirerek toplu yeni kartlar üretin.</p>
             </div>
@@ -876,6 +891,14 @@ export default function App() {
                   headers={headers}
                   rows={rows}
                   imageColumns={imageColumns}
+                  templateLayers={template.layers}
+                  onUpdateLayers={(updatedLayers) => {
+                    setTemplate(prev => ({
+                      ...prev,
+                      layers: updatedLayers
+                    }));
+                  }}
+                  onIdMapped={() => setActiveStep('design')}
                 />
               </div>
 

@@ -1,5 +1,5 @@
 {
-  "name": "Yapay Zeka Kodlama Asistanı",
+  "name": "LiToCat v1.0",
   "description": "Yüksek çözünürlüklü etiket/kart tasarlama, toplu eşleştirme CSV çıktısı üretme, ZIP çıktısı alma ve tek tıkla bulut paylaşım otomasyonu.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

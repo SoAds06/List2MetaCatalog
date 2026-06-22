@@ -79,11 +79,11 @@ export default function CardPreviewer({
         return { text: '', imageUrl: imgUrl };
       }
       
-      // Fallback: If mapped column has URL string representation in values
+      // Fallback: If mapped column has URL or string representation in values
       if (layer.mappedColumn) {
         const customUrl = activeRow.values[layer.mappedColumn];
-        if (customUrl && (customUrl.startsWith('http') || customUrl.startsWith('data:'))) {
-          return { text: '', imageUrl: customUrl };
+        if (customUrl && customUrl.trim() !== '') {
+          return { text: '', imageUrl: customUrl.trim() };
         }
       }
       

@@ -164,7 +164,7 @@ export const DEFAULT_LAYERS: CardLayer[] = [
     id: 'layer-photo',
     name: 'Ürün Fotoğrafı',
     type: 'image',
-    mappedColumn: '__excel_image_auto', // Special marker that auto-picks Excel image
+    mappedColumn: '', // Empty by default, filled dynamically by automatic scanner
     x: 15,
     y: 10,
     width: 70,
