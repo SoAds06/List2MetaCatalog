@@ -926,6 +926,21 @@ export default function App() {
 
               {/* Informative Help Guide Card */}
               <div className="md:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-4 text-xs text-slate-600 leading-relaxed">
+                {/* App Brand Presentation */}
+                <div className="flex flex-col items-center text-center pb-4 border-b border-slate-100 gap-2">
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden shadow-md border border-slate-100 bg-white">
+                    <img 
+                      src="https://sihirlioltagate.blob.core.windows.net/products/ChatGPT%20Image%2022%20Haz%202026%2015_31_56.png" 
+                      alt="ListoCat Logo" 
+                      className="h-full w-full object-cover" 
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-display font-bold text-slate-800">ListoCat</h2>
+                    <p className="text-slate-400 text-[10px] tracking-wider uppercase font-medium">Etiket & Reklam Görseli Oluşturucu</p>
+                  </div>
+                </div>
+
                 <h3 className="font-display font-bold text-slate-800 text-sm flex items-center gap-1.5">
                   <Info size={15} className="text-orange-500" />
                   Nasıl Çalışır?
