@@ -149,6 +149,7 @@ export default function App() {
   const [rows, setRows] = useState<ExcelRow[]>([]);
   const [imageColumns, setImageColumns] = useState<{ colIndex: number; name: string }[]>([]);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
+  const [selectedIdColumn, setSelectedIdColumn] = useState<string>('');
   
   // Template State
   const [template, setTemplate] = useState<CardTemplate>(INITIAL_TEMPLATE);
@@ -199,8 +200,11 @@ export default function App() {
     setIsUploadingQuick(true);
     try {
       // 1. Determine key columns
-      const codeLayer = template.layers.find(l => l.id === 'layer-code');
-      let codeCol = codeLayer?.mappedColumn;
+      let codeCol = selectedIdColumn;
+      if (!codeCol) {
+        const codeLayer = template.layers.find(l => l.id === 'layer-code');
+        codeCol = codeLayer?.mappedColumn || '';
+      }
       if (!codeCol) {
         const firstCol = headers[2] || headers[0];
         codeCol = firstCol;
@@ -398,6 +402,14 @@ export default function App() {
       ...prev,
       layers: updatedLayers
     }));
+
+    // Detect and initialize selectedIdColumn state on file load
+    const initialCodeLayer = updatedLayers.find(l => l.id === 'layer-code');
+    if (initialCodeLayer && initialCodeLayer.mappedColumn) {
+      setSelectedIdColumn(initialCodeLayer.mappedColumn);
+    } else if (data.headers.length > 0) {
+      setSelectedIdColumn(data.headers[0]);
+    }
   };
 
   const activeRow = rows.length > 0 ? rows[activeRowIndex] : null;
@@ -596,8 +608,11 @@ export default function App() {
 
     // Generate product id to image filename mapping inside `.csv` file! 📊
     try {
-      const codeLayer = template.layers.find(l => l.id === 'layer-code');
-      let codeCol = codeLayer?.mappedColumn;
+      let codeCol = selectedIdColumn;
+      if (!codeCol) {
+        const codeLayer = template.layers.find(l => l.id === 'layer-code');
+        codeCol = codeLayer?.mappedColumn || '';
+      }
       if (!codeCol) {
         const lowerHeaders = headers.map(h => h.toLowerCase().trim());
         const matchIdx = lowerHeaders.findIndex(h => 
@@ -667,8 +682,11 @@ export default function App() {
 
   // Internal helper to create and trigger download for custom real-link CSV
   const generateAndDownloadCsv = (urlsMap: Record<number, string>) => {
-    const codeLayer = template.layers.find(l => l.id === 'layer-code');
-    let codeCol = codeLayer?.mappedColumn;
+    let codeCol = selectedIdColumn;
+    if (!codeCol) {
+      const codeLayer = template.layers.find(l => l.id === 'layer-code');
+      codeCol = codeLayer?.mappedColumn || '';
+    }
     if (!codeCol) {
       const lowerHeaders = headers.map(h => h.toLowerCase().trim());
       const matchIdx = lowerHeaders.findIndex(h => 
@@ -812,10 +830,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col selection:bg-indigo-600 selection:text-white antialiased">
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col selection:bg-orange-600 selection:text-white antialiased">
       
       {/* Premium Gradient bar */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shrink-0"></div>
+      <div className="h-1.5 w-full bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500 shrink-0"></div>
 
       {/* Main Core View Area */}
       <div className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 flex flex-col gap-6">
@@ -823,13 +841,13 @@ export default function App() {
         {/* Dynamic Nav Header */}
         <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-display shadow-lg shadow-indigo-600/20">
-              <Layers size={22} className="animate-pulse" />
+            <div className="h-12 w-12 rounded-xl overflow-hidden shadow-lg shadow-orange-600/10 flex items-center justify-center bg-white border border-slate-100 shrink-0">
+              <img src="/src/assets/images/listocat_logo_1782131650738.jpg" alt="ListoCat Logo" className="h-full w-full object-cover" />
             </div>
             <div>
               <h1 id="app-title-header" className="text-xl font-display font-bold text-slate-850 flex items-center gap-2">
-                LiToCat
-                <span className="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-600 font-semibold rounded-full border border-indigo-200">v1.0</span>
+                ListoCat
+                <span className="text-[10px] px-2 py-0.5 bg-orange-50 text-orange-600 font-semibold rounded-full border border-orange-200">v1.0</span>
               </h1>
               <p className="text-xs text-slate-500">Excel verilerini ve ürün resimlerini akıllıca görsellerle birleştirerek toplu yeni kartlar üretin.</p>
             </div>
@@ -841,8 +859,8 @@ export default function App() {
               onClick={() => setActiveStep('upload')}
               className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
                 activeStep === 'upload'
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-50 bg-transparent'
+                  ? 'bg-orange-600 text-white shadow-sm shadow-orange-600/10'
+                  : 'text-slate-600 hover:text-orange-600 hover:bg-slate-50 bg-transparent'
               }`}
             >
               <FileSpreadsheet size={13} />
@@ -856,8 +874,8 @@ export default function App() {
               disabled={rows.length === 0}
               className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed ${
                 activeStep === 'design'
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-50 bg-transparent'
+                  ? 'bg-orange-600 text-white shadow-sm shadow-orange-600/10'
+                  : 'text-slate-600 hover:text-orange-600 hover:bg-slate-50 bg-transparent'
               }`}
             >
               <Layers size={13} />
@@ -871,8 +889,8 @@ export default function App() {
               disabled={rows.length === 0}
               className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed ${
                 activeStep === 'export'
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-50 bg-transparent'
+                  ? 'bg-orange-600 text-white shadow-sm shadow-orange-600/10'
+                  : 'text-slate-600 hover:text-orange-600 hover:bg-slate-50 bg-transparent'
               }`}
             >
               <Download size={13} />
@@ -897,6 +915,10 @@ export default function App() {
                       ...prev,
                       layers: updatedLayers
                     }));
+                    const codeLayer = updatedLayers.find(l => l.id === 'layer-code');
+                    if (codeLayer && codeLayer.mappedColumn) {
+                      setSelectedIdColumn(codeLayer.mappedColumn);
+                    }
                   }}
                   onIdMapped={() => setActiveStep('design')}
                 />
@@ -905,17 +927,17 @@ export default function App() {
               {/* Informative Help Guide Card */}
               <div className="md:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-4 text-xs text-slate-600 leading-relaxed">
                 <h3 className="font-display font-bold text-slate-800 text-sm flex items-center gap-1.5">
-                  <Info size={15} className="text-indigo-500" />
+                  <Info size={15} className="text-orange-500" />
                   Nasıl Çalışır?
                 </h3>
                 <ol className="list-decimal pl-4 space-y-2 text-slate-600">
                   <li>Önce ürün bilgilerinizin (Görseller dahil) bulunduğu Excel (.xlsx) listenizi sol panele yükleyin.</li>
-                  <li>Sistem, hücrelerdeki tüm <strong>gömülü resimleri</strong> otomatik olarak çıkartacak ve satır indeksleriyle eşleştirecektir.</li>
+                  <li>Sistem, sütunlardaki resim ve görsel URL'lerini otomatik olarak analiz edecek ve etiketlerle eşleştirecektir.</li>
                   <li>Ardından tasarım sekmesinde, sürükle-bırak yöntemiyle görsel şablonunuzun üzerine ürün adını, fiyatını ve resmini konumlandırın.</li>
-                  <li>Her ürünü tek tek gözden geçirip dilediğiniz gibi düzenleyerek şık JPEGer şeklinde toplu indirin.</li>
+                  <li>Her ürünü tek tek gözden geçirip dilediğiniz gibi düzenleyerek şık JPEG formatında toplu indirin.</li>
                 </ol>
                 <div className="bg-amber-50/50 border border-amber-200/60 rounded-xl p-3 text-amber-800 mt-2">
-                  <span className="font-semibold">İpucu:</span> Excel dosyasında yer alacak ürün resimlerini, Excel'deki ilgili satırın sütun alanına (örn: D2, D3 hücrelerinin içine doğrudan ortalayarak farenizle bıraktığınız resimler) yerleştirebilirsiniz. Sistem onu piksellerine kadar okuyacaktır!
+                  <span className="font-semibold">İpucu:</span> Excel sütununuzda resimlerin internet adresleri (HTTP/HTTPS linkleri) bulunuyorsa sistem bu görselleri otomatik olarak etiket şablonunuza yükleyecektir!
                 </div>
               </div>
             </div>
@@ -935,7 +957,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setActiveStep('export')}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition shadow-lg shadow-indigo-600/10"
+                  className="px-4 py-2 bg-orange-600 hover:bg-orange-550 text-white rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition shadow-lg shadow-orange-600/10"
                 >
                   Konumlandırmayı Kaydet ve İleri Git
                   <ArrowRight size={13} />
@@ -957,7 +979,7 @@ export default function App() {
               {/* TOP WORKSTATION: Custom Display/Review Panel focused entirely on 1080x1080 precision */}
               <div className="w-full flex flex-col items-center gap-5 bg-slate-100 border border-slate-200 rounded-3xl p-6 shadow-sm" id="view-visualizer-panel">
                 <div className="flex flex-col items-center text-center gap-1">
-                  <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Süper Hassas Kart Önizleme Paneli</span>
+                  <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">Süper Hassas Kart Önizleme Paneli</span>
                   <div className="text-[11px] bg-slate-200 text-slate-800 px-3 py-1 rounded-full font-bold">
                     Orijinal Çözünürlük: {template.widthPx} x {template.heightPx} Px
                   </div>
@@ -1017,7 +1039,7 @@ export default function App() {
                             onClick={() => setExportImageScale(1)}
                             className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                               exportImageScale === 1
-                                ? 'bg-white text-indigo-700 shadow-sm'
+                                ? 'bg-white text-orange-700 shadow-sm'
                                 : 'text-slate-500 hover:text-slate-800'
                             }`}
                           >
@@ -1027,7 +1049,7 @@ export default function App() {
                             onClick={() => setExportImageScale(2)}
                             className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                               exportImageScale === 2
-                                ? 'bg-white text-indigo-700 shadow-sm'
+                                ? 'bg-white text-orange-700 shadow-sm'
                                 : 'text-slate-500 hover:text-slate-800'
                             }`}
                           >
@@ -1044,7 +1066,7 @@ export default function App() {
                         <div className="flex flex-col gap-2">
                           <button
                             onClick={triggerBulkZipExport}
-                            className="w-full justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/15 cursor-pointer"
+                            className="w-full justify-center px-4 py-2.5 bg-orange-600 hover:bg-orange-550 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-orange-600/15 cursor-pointer"
                           >
                             <Download size={14} />
                             Tümünü .ZIP Olarak İndir (Önerilen 🚀)
@@ -1073,11 +1095,11 @@ export default function App() {
                   </div>
 
                   {/* Hızlı Bulut Eşleştirme Paylaşımı (Token'sız & Tek Tık) */}
-                  <div className="bg-gradient-to-br from-indigo-50/60 to-white border border-indigo-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+                  <div className="bg-gradient-to-br from-orange-50/60 to-white border border-orange-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between items-center gap-2 flex-wrap">
-                        <h3 className="font-display font-bold text-indigo-900 text-sm flex items-center gap-2">
-                          <CloudUpload size={18} className="text-indigo-600 animate-pulse" />
+                        <h3 className="font-display font-bold text-orange-950 text-sm flex items-center gap-2">
+                          <CloudUpload size={18} className="text-orange-600 animate-pulse" />
                           Hızlı Bulut Paylaşımı (Önerilen)
                         </h3>
                         <div className="flex items-center gap-1.5 flex-wrap">
@@ -1091,12 +1113,12 @@ export default function App() {
                               ImgBB Kurulabilir (Geçici Mod)
                             </span>
                           )}
-                          <span className="text-[9px] px-2 py-0.5 bg-indigo-600 text-white font-bold rounded-full uppercase tracking-wider">
+                          <span className="text-[9px] px-2 py-0.5 bg-orange-600 text-white font-bold rounded-full uppercase tracking-wider">
                             SIFIR KURULUM
                           </span>
                         </div>
                       </div>
-                      <p className="text-xs text-indigo-700 leading-relaxed">
+                      <p className="text-xs text-orange-850 leading-relaxed">
                         {isImgBbConfigured ? (
                           <span>Görselleriniz kesintisiz şekilde kendi <strong>ImgBB</strong> hesabınızda kalıcı olarak saklanır ve paylaşılabilir link üretilir.</span>
                         ) : (
@@ -1112,14 +1134,14 @@ export default function App() {
                         disabled={isUploadingQuick}
                         className={`w-full justify-center px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-1.5 transition cursor-pointer select-none ${
                           isUploadingQuick
-                            ? 'bg-indigo-200 text-indigo-600 border border-indigo-300 cursor-not-allowed'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/15'
+                            ? 'bg-orange-200 text-orange-600 border border-orange-300 cursor-not-allowed'
+                            : 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/15'
                         }`}
                         id="upload-quick-cloud-btn"
                       >
                         {isUploadingQuick ? (
                           <>
-                            <div className="h-3 w-3 border-2 border-indigo-400 border-t-indigo-800 rounded-full animate-spin"></div>
+                            <div className="h-3 w-3 border-2 border-orange-400 border-t-orange-850 rounded-full animate-spin"></div>
                             <span>Buluta Yükleniyor...</span>
                           </>
                         ) : (
@@ -1132,7 +1154,7 @@ export default function App() {
 
                       {/* Public Copyable URL Output Box */}
                       {uploadedQuickUrl && (
-                        <div className="p-3 bg-white border border-indigo-150 rounded-xl flex flex-col gap-2 animate-fade-in" id="quick-cloud-success-card">
+                        <div className="p-3 bg-white border border-orange-150 rounded-xl flex flex-col gap-2 animate-fade-in" id="quick-cloud-success-card">
                           <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
                             🎉 Herkese Açık Paylaşılabilir Dosya Linki
                           </span>
@@ -1141,7 +1163,7 @@ export default function App() {
                               type="text"
                               readOnly
                               value={uploadedQuickUrl}
-                              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs w-full font-mono text-indigo-700 select-all focus:outline-none font-semibold"
+                              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs w-full font-mono text-orange-700 select-all focus:outline-none font-semibold"
                               id="quick-cloud-output-copyable-link"
                             />
                             <button
@@ -1201,7 +1223,7 @@ export default function App() {
                             // Look for columns mapping title and price to display nicely in the row item
                             const titleCol = template.layers.find(l => l.id === 'layer-title')?.mappedColumn || headers[0];
                             const priceCol = template.layers.find(l => l.id === 'layer-price')?.mappedColumn || headers[1];
-                            const codeCol = template.layers.find(l => l.id === 'layer-code')?.mappedColumn || headers[2];
+                            const codeCol = selectedIdColumn || template.layers.find(l => l.id === 'layer-code')?.mappedColumn || headers[2];
                             
                             // Look for any image matching this row to show miniature (including embedded or template-mapped text URLs or scanned URLs)
                             let firstAvailableImg = Object.values(row.images)[0] || '';
@@ -1251,16 +1273,16 @@ export default function App() {
                               <tr
                                 key={row.id}
                                 className={`cursor-pointer transition-colors ${
-                                  isSelected ? 'bg-indigo-50/40 hover:bg-indigo-50/60' : 'hover:bg-slate-50/50'
+                                  isSelected ? 'bg-orange-50/40 hover:bg-orange-50/60' : 'hover:bg-slate-50/50'
                                 }`}
                                 onClick={() => setActiveRowIndex(idx)}
                               >
                                 {/* 1. Radio point */}
                                 <td className="py-3 px-3 text-center">
                                   <div className={`h-4 w-4 rounded-full border flex items-center justify-center ${
-                                    isSelected ? 'border-indigo-600 bg-indigo-100 text-indigo-600' : 'border-slate-300'
+                                    isSelected ? 'border-orange-600 bg-orange-100 text-orange-600' : 'border-slate-300'
                                   }`}>
-                                    {isSelected && <span className="h-2 w-2 rounded-full bg-indigo-600" />}
+                                    {isSelected && <span className="h-2 w-2 rounded-full bg-orange-600" />}
                                   </div>
                                 </td>
 

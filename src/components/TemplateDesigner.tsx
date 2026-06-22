@@ -864,7 +864,7 @@ export default function TemplateDesigner({
                   onClick={() => setActiveLayerId(layer.id)}
                   className={`group p-2.5 rounded-xl border text-xs font-sans items-center flex justify-between cursor-pointer transition-all ${
                     isActive
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/15'
+                      ? 'bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-600/15'
                       : 'bg-white border-slate-200 hover:border-slate-350 text-slate-700'
                   }`}
                   id={`layer-item-${layer.id}`}
@@ -889,7 +889,7 @@ export default function TemplateDesigner({
                     }}
                     className={`p-1 rounded-md transition duration-150 shrink-0 ${
                       isActive 
-                        ? 'text-white hover:bg-indigo-700' 
+                        ? 'text-white hover:bg-orange-700' 
                         : 'text-slate-400 opacity-60 hover:opacity-100 hover:bg-slate-100'
                     }`}
                     title="Katmanı Sil"

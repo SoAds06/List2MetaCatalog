@@ -161,10 +161,10 @@ export default function ExcelMapping({
 
       {/* Column mapping controls */}
       {rows.length > 0 && templateLayers && onUpdateLayers && (
-        <div className="bg-gradient-to-br from-indigo-50/70 to-indigo-100/30 border border-indigo-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+        <div className="bg-gradient-to-br from-orange-50/70 to-orange-100/30 border border-orange-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h3 className="font-display font-bold text-slate-800 text-sm flex items-center gap-2">
-              <Sliders className="h-4.5 w-4.5 text-indigo-600 animate-pulse" />
+              <Sliders className="h-4.5 w-4.5 text-orange-600 animate-pulse" />
               Sütun Eşleştirme Sihirbazı
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed">
@@ -175,9 +175,9 @@ export default function ExcelMapping({
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-4 mt-2">
             {/* 1. PRODUCT ID / CODE COLUMN */}
-            <div className="flex-1 flex flex-col gap-1.5 p-4 bg-white border border-slate-200/85 rounded-xl hover:border-indigo-200 transition-all max-w-xl">
+            <div className="flex-1 flex flex-col gap-1.5 p-4 bg-white border border-slate-200/85 rounded-xl hover:border-orange-200 transition-all max-w-xl">
               <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5 uppercase tracking-wide">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-orange-600"></span>
                 Ürün Kod / ID Sütunu Seçin
               </label>
               <div className="relative mt-1">
@@ -196,7 +196,7 @@ export default function ExcelMapping({
                       }, 200);
                     }
                   }}
-                  className="w-full bg-slate-50 border border-slate-250 hover:border-indigo-400 focus:border-indigo-500 text-xs rounded-lg py-2.5 px-3 pr-8 appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all font-medium text-slate-800"
+                  className="w-full bg-slate-50 border border-slate-250 hover:border-orange-400 focus:border-orange-500 text-xs rounded-lg py-2.5 px-3 pr-8 appearance-none focus:outline-none focus:ring-1 focus:ring-orange-500 transition-all font-medium text-slate-800"
                 >
                   <option value="">-- Sütun Seçin --</option>
                   {headers.map((h, i) => (
@@ -205,7 +205,7 @@ export default function ExcelMapping({
                 </select>
                 <ChevronDown size={14} className="absolute right-2.5 top-3.5 text-slate-400 pointer-events-none" />
               </div>
-              <span className="text-[10px] text-indigo-600 font-medium mt-1">Barkod içeriği ve çıktı raporu ID alanı olarak kullanılır.</span>
+              <span className="text-[10px] text-orange-600 font-medium mt-1">Barkod içeriği ve çıktı raporu ID alanı olarak kullanılır.</span>
             </div>
 
             {/* Proactive confirmation and step transition */}
@@ -215,7 +215,7 @@ export default function ExcelMapping({
                 onClick={() => {
                   if (onIdMapped) onIdMapped();
                 }}
-                className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                className="w-full sm:w-auto px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <Check size={16} />
                 Eşleşmeyi Onayla ve Tasarıma Geç
