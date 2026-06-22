@@ -1,0 +1,6 @@
+{
+  "name": "Yapay Zeka Kodlama Asistanı",
+  "description": "Yüksek çözünürlüklü etiket/kart tasarlama, toplu eşleştirme CSV çıktısı üretme, ZIP çıktısı alma ve tek tıkla bulut paylaşım otomasyonu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
